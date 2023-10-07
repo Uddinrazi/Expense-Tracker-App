@@ -1,0 +1,28 @@
+.form-container {
+    min-height: 100%;
+    display: flex;
+    align-items: center;
+    
+  }
+  
+
+
+#signup-form{
+    margin: auto;
+    width: 382px;
+   justify-content: space-around;
+    border: 3px solid #231f1f;   ;
+}
+input[type=text], input[type=password] {   
+    width: 100%;   
+    margin: 8px 0;  
+    padding: 12px 20px;   
+    display: inline-block;  
+   
+}  
+
+#btn{
+    width: 100%;
+    margin-bottom: 20px;
+    background-color: #3030f4ec;
+}
