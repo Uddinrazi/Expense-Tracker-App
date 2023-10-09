@@ -25,19 +25,26 @@ const postUserInfo = async(req, res, next) => {
 
 
 const postLoginInfo = async (req, res, next) => {
-    const {email, password} = req.body
-
-    const user = await Users.findOne({where: {email: req.body.email}})
+    const {email,password} = req.body
+    //const password = req.body.password;
+    console.log(req.body)
+    console.log('print line 30')
+    
+    const user = await Users.findOne({where: {email: email, password: password}})
     if(user){
-        const pwd_valid = await bycrpt.compare(req.body.password, user.password)
-        if(pwd_valid){
-            res.status(200).json(req.body)
-
+        if(user.password === password){
+        res.status(200).json({success:true, message: 'login successful'})
         }else{
-            res.status(400).json({message: 'Invalid Password'})
+        return res.status(400).json({success: false, message: 'Inconnect password'})
+        
         }
     }
-
+        else{
+            res.status(404).json({message: 'User does not exist'})
+        }
+    
 }
+
+
 
 module.exports = {postUserInfo, postLoginInfo}
