@@ -15,7 +15,7 @@ async function submit(e){
         }
         document.getElementById('signup-form').reset();
         console.log(users)
-        let response = await axios.post('http://localhost:5000/user', users)
+        let response = await axios.post('http://localhost:5000/user/user-data', users)
         console.log(response)
         console.log('line 20')
     }

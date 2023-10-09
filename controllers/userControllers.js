@@ -1,10 +1,19 @@
 const Users = require('../models/signupModel')
 
+function isStringInvalid(string){
+    if(string == undefined ||  string.length ===0 )
+    return true
+    else
+    return false
+}
+
 const postUserInfo = async(req, res, next) => {
-    console.log('line c 4')
+    
     try{
-        console.log(req.body)
-        console.log('line c 6')
+        const {name, email, password} = req.body
+        if(isStringInvalid(name) || isStringInvalid(email) || isStringInvalid(password)){
+        return res.status(400).json({err: 'Bad credential, something is missing'})
+        }
         const data = await Users.create(req.body)
         res.status(201).json({message: "data submitted" , data })
     }
