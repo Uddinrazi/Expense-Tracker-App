@@ -12,7 +12,8 @@
     margin: auto;
     width: 382px;
    justify-content: space-around;
-    border: 3px solid #231f1f;   ;
+    border: 3px solid #231f1f; 
+    border-radius: 1rem  ;
 }
 input[type=text], input[type=password] {   
     width: 100%;   
@@ -23,7 +24,13 @@ input[type=text], input[type=password] {
 }  
 
 #btn{
-    width: 100%;
+    width: 49%;
     margin-bottom: 20px;
-    background-color: #3030f4ec;
+    background-color: #8f8ff8ec;
+}
+
+#btn2{
+    width: 49%;
+    margin-bottom: 20px;
+    background-color: #8f8ff8ec;
 }
