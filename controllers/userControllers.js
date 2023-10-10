@@ -44,7 +44,10 @@ const postLoginInfo = async (req, res, next) => {
                 throw new Error()
             }
         if(result === true){
+       
         res.status(200).json({success:true, message: 'login successful'})
+        
+       
         }else{
         return res.status(400).json({success: false, message: 'Incorrect password'})
         

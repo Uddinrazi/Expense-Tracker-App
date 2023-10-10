@@ -7,6 +7,7 @@ const app = express()
 
 app.use(express.json())
 const signupRoutes = require('./routes/userRoutes')
+const expenseRoutes = require('./routes/expenseRoutes')
 
 app.use(express.static(path.join(__dirname, "/public")))
 
@@ -15,6 +16,7 @@ app.use(cors())
 app.use(bodyParser.json())
 
 app.use('/user', signupRoutes);
+app.use('/expense', expenseRoutes)
 
 
 sequelize.sync({force: false})
