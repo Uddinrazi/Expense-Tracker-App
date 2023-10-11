@@ -16,6 +16,7 @@ async function submit_Lform(e) {
         
         let response = await axios.post('http://localhost:5000/user/login-data', login_details)
        console.log(response)
+       window.localStorage.setItem('token', response.data.token)
         window.location = "http://localhost:5000/expense.html"
     }catch(err){
         console.log(err)

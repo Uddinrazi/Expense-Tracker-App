@@ -1,6 +1,6 @@
 const Users = require('../models/signupModel')
 const bcrypt = require("bcrypt")
-
+const jwt = require('jsonwebtoken')
 function isStringInvalid(string){
     if(string == undefined ||  string.length ===0 )
     return true
@@ -29,10 +29,14 @@ const postUserInfo = async(req, res, next) => {
     }
 }
 
+function generateAccessToken(id, name){
+    return jwt.sign({userId : id, name:name}, 'jdfkjskjfndi83eeu873g28uew')
+}
+
 
 const postLoginInfo = async (req, res, next) => {
     const {email,password} = req.body
-    console.log('print line 30')
+    //console.log('print line 30')
     
     if(isStringInvalid(email) || isStringInvalid(password)){
         res.status(400).json({message: 'some thing is missing'})
@@ -45,10 +49,9 @@ const postLoginInfo = async (req, res, next) => {
             }
         if(result === true){
        
-        res.status(200).json({success:true, message: 'login successful'})
+        res.status(200).json({success:true, message: 'login successful', token: generateAccessToken(user[0].id, user[0].name)})
         
-       
-        }else{
+    }else{
         return res.status(400).json({success: false, message: 'Incorrect password'})
         
         }

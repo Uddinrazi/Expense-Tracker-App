@@ -2,10 +2,17 @@ const Expense = require('../models/expenseModels')
 
 
 module.exports.getExpenseData = async (req, res, next) => {
-    try{
-        
-            const all_data = await Expense.findAll()
+    try{    
+            const userId = req.user.id;
+            const all_data = await Expense.findAll({where: {userId: req.user.id}})
+            if(userId == null)
+            console.log('user is null hense no user found')
+            else
+           console.log('error is not there')
+            console.log(userId,' line 7 in ec with id')
             res.status(200).json({totalXpense: all_data})
+           
+
             }
             catch(err) {
                 console.log(err)
@@ -15,8 +22,9 @@ module.exports.getExpenseData = async (req, res, next) => {
 
 module.exports.postExpenseData = async(req, res, next) => {
    try{
-    console.log(req.body)
-    console.log('line no 19')
+    userId = req.body.id;
+    console.log(userId,'m user id in ec post')
+    
     const data = await Expense.create(req.body)
     res.status(201).json({newDetails: data})
     }
