@@ -9,8 +9,9 @@ const authenticate = (req, res, next) => {
         const user = jwt.verify(token,'jdfkjskjfndi83eeu873g28uew')
        console.log(user.userId,'m user id ')
         Users.findByPk(user.userId).then(user => {
-           
-            req.user = user;
+           console.log(user.id)
+            req.user = user.id;
+            //console.log(req.user, 'm user')
             next();
         }).catch(err => {
             throw new Error(err)

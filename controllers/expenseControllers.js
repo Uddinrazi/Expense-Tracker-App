@@ -3,13 +3,11 @@ const Expense = require('../models/expenseModels')
 
 module.exports.getExpenseData = async (req, res, next) => {
     try{    
-            const userId = req.user.id;
-            const all_data = await Expense.findAll({where: {userId: req.user.id}})
-            if(userId == null)
-            console.log('user is null hense no user found')
-            else
-           console.log('error is not there')
-            console.log(userId,' line 7 in ec with id')
+            req.body.userId = req.user
+            //console.log(req.body.userId, 'm user id ')
+            const all_data = await Expense.findAll({where: {userId: req.body.userId}})
+            
+            
             res.status(200).json({totalXpense: all_data})
            
 
@@ -22,9 +20,8 @@ module.exports.getExpenseData = async (req, res, next) => {
 
 module.exports.postExpenseData = async(req, res, next) => {
    try{
-    userId = req.body.id;
-    console.log(userId,'m user id in ec post')
     
+    req.body.userId = req.user;
     const data = await Expense.create(req.body)
     res.status(201).json({newDetails: data})
     }
@@ -36,19 +33,24 @@ module.exports.postExpenseData = async(req, res, next) => {
 module.exports.deleteData = async(req, res, next) => {
     
     try{
-    if(req.params.id === 'undefined'){
+    if(req.params.expenseid === 'undefined'){
         console.log('ID is missing')
         res.status(400).json({err: 'No ID FOUND'})
     }
-
-    const xpensId = req.params.id;
-    console.log(xpensId)
-    console.log('line 35')
-    await Expense.destroy({where: {id: xpensId}})
-    res.sendStatus(200)
+    req.body.userId = req.user
+    const xpensId = req.params;
+    console.log(xpensId, ' m expense id line 42')
+    
+   let noOfrows = await Expense.destroy({where: {id: xpensId.expenseid }})
+   if(noOfrows === 0){
+    return res.status(404).json({success:false, message:'not user expense'})
+   }
+    //console.log(data, 'm data here ')
+    return res.status(200).json({message: 'data got deleted'})
 }
 catch(err) {
     console.log(err)
+    return res.status(500).json({message: 'Failed to delete'});
 }
 }
 

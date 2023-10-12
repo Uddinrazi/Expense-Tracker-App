@@ -16,8 +16,8 @@ async function xpenseManager(event){
     console.log(obj1)
     
     const token = window.localStorage.getItem('token')
-    //const userId = req.body.id;
-    let response = await axios.post("http://localhost:5000/expense/add-expense/${userId}",obj1,{headers: {'Authorization': token}})
+   // const userId = req.body.id;
+    let response = await axios.post("http://localhost:5000/expense/add-expense",obj1,{headers: {'Authorization': token}})
     console.log(response.data.newDetails)
     
    
@@ -32,11 +32,7 @@ catch(err) {
 window.addEventListener('DOMContentLoaded', async() => {
     try{
         const token = window.localStorage.getItem('token')
-       /* if(token == null)
-        window.location = "http://localhost:5000/login.html"
-        else
-        console.log('toekn not there') */
-        console.log(token, ' line no 33 ejs')
+       
         let response = await axios.get("http://localhost:5000/expense/expense-data", {headers: {'Authorization': token}})
         //console.log(headers)
         for(let i=0; i< response.data.totalXpense.length; i++){
@@ -71,13 +67,14 @@ function showDetailOnScreen(obj1){
         
 
     }
-    async function deleteXpense(id){
-        console.log(id)
+    async function deleteXpense(expenseid){
+        console.log(expenseid,'m expense id line 71')
         try{
-            await axios.delete(`http://localhost:5000/expense/delete-expense/${id}`)
-            
+            const token = window.localStorage.getItem('token')
+            await axios.delete(`http://localhost:5000/expense/delete-expense/${expenseid}`,{headers: {'Authorization': token}})
+            console.log(expenseid,'m expense id line 75')
 
-            removeFromScreen(id)
+            removeFromScreen(expenseid)
         }
         catch(err){
             console.log(err)
@@ -85,9 +82,9 @@ function showDetailOnScreen(obj1){
     }
     
 
-    function removeFromScreen(id){
+    function removeFromScreen(expenseid){
     const parentNode = document.getElementById('change');
-    const childNodeDeleted = document.getElementById(id);
+    const childNodeDeleted = document.getElementById(expenseid);
     if(childNodeDeleted){
       parentNode.removeChild(childNodeDeleted)
     }
