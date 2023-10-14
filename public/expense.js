@@ -1,3 +1,5 @@
+//const Razorpay = require('razorpay');
+
 async function xpenseManager(event){
     try{
     event.preventDefault();
@@ -19,7 +21,8 @@ async function xpenseManager(event){
    // const userId = req.body.id;
     let response = await axios.post("http://localhost:5000/expense/add-expense",obj1,{headers: {'Authorization': token}})
     console.log(response.data.newDetails)
-    
+
+    //document.body.innerHTML = document.body.innerHTML + '<div>  </div>'
    
     showDetailOnScreen(response.data.newDetails);//why the function of this written after bracket
 }
@@ -34,7 +37,7 @@ window.addEventListener('DOMContentLoaded', async() => {
         const token = window.localStorage.getItem('token')
        
         let response = await axios.get("http://localhost:5000/expense/expense-data", {headers: {'Authorization': token}})
-        //console.log(headers)
+        
         for(let i=0; i< response.data.totalXpense.length; i++){
             showDetailOnScreen(response.data.totalXpense[i]) 
         }
@@ -105,4 +108,61 @@ function showDetailOnScreen(obj1){
         
     }
     childele.appendChild(ebtn);
+}
+
+function showPremiumUserMessage (){
+    document.getElementById('rbtn').style.visibility= 'hidden';
+    document.getElementById('message').innerHTML = 'You are a premium user';
+}
+
+
+function parseJwt (token) {
+    var base64Url = token.split('.')[1];
+    var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+
+    return JSON.parse(jsonPayload);
+}
+
+document.getElementById('pbtn').onclick = async function (e) {
+    const token = localStorage.getItem('token')
+    const decodeToken = parseJwt(token)
+    console.log(decodeToken)
+    const isPremium = decodeToken.isPremium
+    if(isPremium){
+        showPremiumUserMessage();
+    }
+    let response = await axios.get("http://localhost:5000/purchase/premium-membership", 
+    {headers: {'Authorization': token}})
+    console.log(response)
+
+    const options = {
+        'key_id': response.data.key_id,
+        'order_id': response.data.order_id,
+
+        'handler' : async function(response){
+            await axios.post('http://localhost:5000/purchase/update-transaction-status', {
+                order_id: options.order_id,
+                payment_id: response.razorpay_payment_id,
+            }, {headers: {'Authorization' : token}})
+
+            alert('You ara a premium user')
+            document.getElementById('rbtn').style.visibility= 'hidden';
+            document.getElementById('message').innerHTML = 'You are a premium user';
+            localStorage.setItem('isAdmin', true)
+
+
+        }
+    }
+
+    const rzp1 = new Razorpay(options)
+    razp1.open();
+    e.preventDefault()
+
+    rzp1.on('payment.failed', function(response){
+        console.log(response);
+        alert('Some thing went wrong')
+    })
 }

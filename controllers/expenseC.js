@@ -1,12 +1,12 @@
-const Expense = require('../models/expenseModels')
+const Expense = require('../models/expenseM')
 
 
 module.exports.getExpenseData = async (req, res, next) => {
     try{    
             req.body.userId = req.user
-            //console.log(req.body.userId, 'm user id ')
-            const all_data = await Expense.findAll({where: {userId: req.body.userId}})
             
+            const all_data = await Expense.findAll({where: {userId: req.body.userId}})
+            //console.log(req.body.userId, 'm user id  line 9')
             
             res.status(200).json({totalXpense: all_data})
            
@@ -53,6 +53,3 @@ catch(err) {
     return res.status(500).json({message: 'Failed to delete'});
 }
 }
-
-
-    
