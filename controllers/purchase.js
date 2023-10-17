@@ -39,10 +39,14 @@ module.exports.updateTransactionStatus = async (req, res, next) => {
     try{
         const {payment_id, order_id} = req.body;
         req.body.userId = req.user;
-        
+        console.log(req.body.userId,'line 42')
         const order = await Order.findOne({where: {orderid : order_id}})
         const promise1 = order.update({paymentid: payment_id, status: 'SUCCESSFULL'})
-        const promise2 = User.update(req.body, {where: {ispremium: true}})
+        const promise2 = User.update({ isPremium: true }, {
+            where: {
+              id: req.body.userId
+            }
+          });
         
         Promise.all([promise1, promise2]).then(() => {
             const userId = req.user

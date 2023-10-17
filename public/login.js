@@ -15,9 +15,10 @@ async function submit_Lform(e) {
         document.getElementById('login-form').reset();
         
         let response = await axios.post('http://localhost:5000/user/login-data', login_details)
-       //console.log(response)
+      
        localStorage.setItem('token',response.data.token)
-       console.log(response.data.token, 'm token with res')
+       
+      // localStorage.setItem('isPremium', ture)
        alert('login Successfull')
         window.location = "http://localhost:5000/expense.html"
     }catch(err){
