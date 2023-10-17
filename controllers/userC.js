@@ -32,10 +32,11 @@ const postUserInfo = async(req, res, next) => {
 function generateAccessToken(id, name, isPremium){
     return jwt.sign({userId : id, name:name,isPremium}, 'jdfkjskjfndi83eeu873g28uew')
 }
-
+    
 
 const postLoginInfo = async (req, res, next) => {
     const {email,password} = req.body
+    
     //console.log('print line 30')
     
     if(isStringInvalid(email) || isStringInvalid(password)){
@@ -49,8 +50,8 @@ const postLoginInfo = async (req, res, next) => {
             }
         if(result === true){
        
-        res.status(200).json({success:true, message: 'login successful', token: generateAccessToken(user[0].id, user[0].name, user[0].isPremium)})
-        
+res.status(200).json({success:true, message: 'login successful', token: generateAccessToken(user[0].id, user[0].name, user[0].isPremium)})
+        //console.log(generateAccessToken(user[0].id),'hey line no 53 access')
     }else{
         return res.status(400).json({success: false, message: 'Incorrect password'})
         
@@ -65,4 +66,4 @@ const postLoginInfo = async (req, res, next) => {
 
 
 
-module.exports = {postUserInfo, postLoginInfo}
+module.exports = {postUserInfo, postLoginInfo,generateAccessToken}

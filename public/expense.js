@@ -16,11 +16,12 @@ async function xpenseManager(event){
     }
     
     console.log(obj1)
+    document.getElementById('my-form').reset();
     
     const token = window.localStorage.getItem('token')
-   // const userId = req.body.id;
+   //const userId = req.body.id;
     let response = await axios.post("http://localhost:5000/expense/add-expense",obj1,{headers: {'Authorization': token}})
-    console.log(response.data.newDetails)
+    //console.log(response.data.newDetails)
 
     //document.body.innerHTML = document.body.innerHTML + '<div>  </div>'
    
@@ -34,10 +35,13 @@ catch(err) {
 
 window.addEventListener('DOMContentLoaded', async() => {
     try{
-        const token = window.localStorage.getItem('token')
-       
-        let response = await axios.get("http://localhost:5000/expense/expense-data", {headers: {'Authorization': token}})
-        
+        const token = localStorage.getItem('token')
+        if(token == null){
+            location = "http://localhost:5000/login.html"
+        }
+        //console.log(token, 'm token in line 39 ec')
+let response = await axios.get("http://localhost:5000/expense/expense-data", {headers: {'Authorization': token}})
+        //console.log(token, 'm token in line 41 ec')
         for(let i=0; i< response.data.totalXpense.length; i++){
             showDetailOnScreen(response.data.totalXpense[i]) 
         }
@@ -71,11 +75,11 @@ function showDetailOnScreen(obj1){
 
     }
     async function deleteXpense(expenseid){
-        console.log(expenseid,'m expense id line 71')
+        //console.log(expenseid,'m expense id line 71')
         try{
             const token = window.localStorage.getItem('token')
             await axios.delete(`http://localhost:5000/expense/delete-expense/${expenseid}`,{headers: {'Authorization': token}})
-            console.log(expenseid,'m expense id line 75')
+            //console.log(expenseid,'m expense id line 75')
 
             removeFromScreen(expenseid)
         }
@@ -136,11 +140,11 @@ document.getElementById('pbtn').onclick = async function (e) {
     }
     let response = await axios.get("http://localhost:5000/purchase/premium-membership", 
     {headers: {'Authorization': token}})
-    console.log(response)
+    //console.log(response)
 
     const options = {
         'key_id': response.data.key_id,
-        'order_id': response.data.order_id,
+        'order_id': response.data.order.id,
 
         'handler' : async function(response){
             await axios.post('http://localhost:5000/purchase/update-transaction-status', {
@@ -149,20 +153,46 @@ document.getElementById('pbtn').onclick = async function (e) {
             }, {headers: {'Authorization' : token}})
 
             alert('You ara a premium user')
-            document.getElementById('rbtn').style.visibility= 'hidden';
+            document.getElementById('pbtn').style.visibility= 'hidden';
             document.getElementById('message').innerHTML = 'You are a premium user';
-            localStorage.setItem('isAdmin', true)
-
-
+            showLeaderBoard()
+            window.localStorage.setItem('token', response.data.token)
+            console.log('line no 160')
+            //showLeaderBoard()
+            
+           
         }
     }
 
     const rzp1 = new Razorpay(options)
-    razp1.open();
+    rzp1.open();
     e.preventDefault()
 
     rzp1.on('payment.failed', function(response){
         console.log(response);
         alert('Some thing went wrong')
     })
+}
+
+function showLeaderBoard() {
+    const p = document.getElementById('message');
+    var sbtn = document.createElement('input');
+    sbtn.type ='button';
+    sbtn.value ='Show Leader Board';
+    sbtn.id = 'showboard';
+
+    console.log('m line 183 sl')
+    p.prependChild(sbtn);
+
+    document.getElementById('showboard').onclick = async () => {
+        const token = localStorage.getItem('token')
+        const userLeaderBoardArray = await axios.get('http://localhost:5000/purchase/update-transaction-status', {headers: {'Authorization': token}})
+        console.log(userLeaderBoardArray)
+
+        const leaderboard = document.getElementById('showboard')
+        leaderboard.innerHTML = '<h2>Leader Board</h2>'
+        userLeaderBoardArray.data.forEach((userDetails) => {
+            leaderboard.innerHTML= `<li>Name: ${userDetails.name}  Total Expense:  ${userDetails.expense}`
+        })
+    }
 }

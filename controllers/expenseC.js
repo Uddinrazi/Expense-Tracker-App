@@ -22,6 +22,7 @@ module.exports.postExpenseData = async(req, res, next) => {
    try{
     
     req.body.userId = req.user;
+    console.log(req.body.userId,'m id in line 25 in ec')
     const data = await Expense.create(req.body)
     res.status(201).json({newDetails: data})
     }

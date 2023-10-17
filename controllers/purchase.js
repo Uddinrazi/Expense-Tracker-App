@@ -1,29 +1,29 @@
 const Razorpay = require('razorpay');
 const Order = require('../models/order')
+const User = require('../models/userM')
+const userController = require('./userC')
 
 
 module.exports.purchase_premium = async(req, res, next) => {
     
     try{
-        console.log('hey m in func in pc line no 8')
-        
     var rzp = new Razorpay({
         key_id: process.env.RAZORPAY_KEY_ID,
         key_secret: process.env.RAZORPAY_KEY_SECRET
     })
-   // http://localhost:5000/purchase/premium-membership
+  
   
     const amount = 2000;
-
+    req.body.userId = req.user;
     rzp.orders.create({amount, currency:'INR'}, async (err, order) => {
         if(err){
-            console.log('m in error')
+            //console.log('m in error')
             throw new Error(JSON.stringify(err))
             
         }
-        console.log(' func in pc line no 21')
-        console.log(order)
-       await req.user.createOrder({orderid: order.id, status: 'PENDING'})
+        
+        //console.log(order)
+       await Order.create({orderid: order.id, status: 'PENDING'})
             return res.status(201).json({order, key_id: rzp.key_id})
         
 
@@ -38,12 +38,17 @@ module.exports.purchase_premium = async(req, res, next) => {
 module.exports.updateTransactionStatus = async (req, res, next) => {
     try{
         const {payment_id, order_id} = req.body;
+        req.body.userId = req.user;
+        
         const order = await Order.findOne({where: {orderid : order_id}})
         const promise1 = order.update({paymentid: payment_id, status: 'SUCCESSFULL'})
-        const promise2 = req.user.update({ispremium: true})
+        const promise2 = User.update(req.body, {where: {ispremium: true}})
         
         Promise.all([promise1, promise2]).then(() => {
-            return res.status(202).json({success: true, message: ' transaction successfull'})
+            const userId = req.user
+            
+            return res.status(202).json({success: true, message: ' transaction successfull', token: userController.generateAccessToken(userId,undefined,true)})
+            
         }).catch(err => { 
             throw new Error(err)
         })
@@ -60,6 +65,7 @@ module.exports.updateTransactionStatus = async (req, res, next) => {
         }
         
     }catch(err){
+        const {payment_id, order_id} = req.body;
         if(order_id == undefined){
             const promise3 = order.update({paymentid: payment_id, status: 'FAILED'})
             const promise4 = req.user.update({ispremium: false})

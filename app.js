@@ -14,6 +14,7 @@ const Users = require('./models/userM')
 const Expense = require('./models/expenseM')
 const Order = require('./models/order')
 
+require('dotenv').config();
 
 app.use(express.static(path.join(__dirname, "/public")))
 
@@ -25,7 +26,7 @@ app.use('/user', signupRoutes);
 app.use('/expense', expenseRoutes)
 app.use('/purchase', purchaseRoutes)
 
-// http://localhost:5000/purchase/premium-membership
+
 
 Users.hasMany(Expense)
 Expense.belongsTo(Users)
