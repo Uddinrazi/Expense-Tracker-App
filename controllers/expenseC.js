@@ -1,4 +1,6 @@
 const Expense = require("../models/expenseM");
+const User = require("../models/userM");
+
 
 module.exports.getExpenseData = async (req, res, next) => {
   try {
@@ -18,9 +20,21 @@ module.exports.getExpenseData = async (req, res, next) => {
 module.exports.postExpenseData = async (req, res, next) => {
   try {
     req.body.userId = req.user;
-    console.log(req.body.userId, "m id in line 25 in ec");
+    console.log(req.user,'line 31 ssssssss') 
+    const {amount, description, category} = req.body
     const data = await Expense.create(req.body);
-    res.status(201).json({ newDetails: data });
+    console.log(req.user.total_cost, 'line 26 dddddddddd')
+    const totalXpense = Number(req.user.total_cost) + Number(req.body.amount)
+    
+    await User.update({
+      total_cost: totalXpense
+    },{
+      where: {id: req.user}
+    })
+    console.log(id,'line 31 id')
+    console.log(req.user,'line 31 id')
+    console.log(totalXpense, 'line 24 tttttt')
+    res.status(201).json({ newDetails: data }, {expense: totalXpense});
   } catch (err) {
     console.log(err);
   }

@@ -18,7 +18,11 @@ const Users = sequelize.define('users', {
         allowNull: false,
 
     },
-    isPremium : Sequelize.BOOLEAN
+    isPremium : Sequelize.BOOLEAN,
+    total_cost: {
+        type: Sequelize.INTEGER,
+        default: 0
+    }
 })
 
 module.exports = Users;

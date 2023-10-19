@@ -1,34 +1,19 @@
 const Expense = require("../models/expenseM");
 const User = require("../models/userM");
+const sequelize = require("../util/db");
 
 
 module.exports.getLeaderBorad = async(req, res, next) => {
     try{
-     const users = await User.findAll({
-        attributes: ['id', 'name']
+     const leaderBoard = await User.findAll({
+        order: [['total_cost','DESC']]
      })
-     const expenses = await Expense.findAll({
-        attributes: ['userId', 'amount']
-     })
-    const userAggregatedExpenses = []
-
-    
-    expenses.map((expense) => {
-        if(userAggregatedExpenses[expense.id]){
-        userAggregatedExpenses[expense.id] = userAggregatedExpenses[expense.id] + expense.amount
-        console.log(userAggregatedExpenses[expense.id],'line 15 idddd')
-        console.log(expense.amount, ' line 16 ammmm')
-        console.log(expense, 'line 17 exxxx')
-        console.log(expenses,'line 18 eeee')
-    ;
-}else{
-        userAggregatedExpenses[expense.id] = expense.amount;
-    }
-})  
-    console.log(userAggregatedExpenses, 'line 20 aggg')
-    return res.status(200).json(userAggregatedExpenses)
+      
+    //console.log(leaderBoard, 'line 20 aggg')
+    res.status(200).json(leaderBoard)
     }
     catch(err){
         console.log(err)
+        res.status(500).json(err)
     }
 }

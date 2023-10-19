@@ -42,7 +42,7 @@ window.addEventListener("DOMContentLoaded", async () => {
     }
     //console.log(token, 'm token in line 39 ec')
     const decodeToken = parseJwt(token);
-    console.log(decodeToken, "m decode");
+    //console.log(decodeToken, "m decode");
     if (decodeToken.isPremium) {
       showPremiumUserMessage()
       showLeaderBoard();
@@ -62,10 +62,10 @@ window.addEventListener("DOMContentLoaded", async () => {
 });
 
 function showDetailOnScreen(obj1) {
-  console.log(obj1);
+  
   const parentEle = document.getElementById("details");
   const childele = document.createElement("li");
-  console.log(childele);
+  
   childele.textContent =
     obj1.amount + "  " + obj1.description + "  " + obj1.category;
 
@@ -196,6 +196,7 @@ document.getElementById("pbtn").onclick = async function (e) {
 };
 
 function showLeaderBoard() {
+  try{
   const p = document.getElementById("message");
   var sbtn = document.createElement("input");
   sbtn.type = "button";
@@ -205,18 +206,23 @@ function showLeaderBoard() {
   p.appendChild(sbtn);
 
   document.getElementById("showboard").onclick = async () => {
+    
     const token = localStorage.getItem("token");
 
     const userLeaderBoardArray = await axios.get('http://localhost:5000/features/show-premium-features', {headers: {'Authorization': token}})
-    console.log(userLeaderBoardArray, 'm line 211')
+    //console.log(userLeaderBoardArray, 'm line 211')
    
 
-    const leaderboard = document.getElementById("showboard");
-    leaderboard.innerHTML = "<h2>Leader Board</h2>";
+    const leaderboard = document.getElementById("lboard");
+    leaderboard.innerHTML +=  '<h2>Leader Board</h2>';
     userLeaderBoardArray.data.forEach((userDetails) => {
-      leaderboard.innerHTML = `<li>Name: ${userDetails.name}  Total Expense:  ${userDetails.expense}`;
+      leaderboard.innerHTML += `<li>Name: ${userDetails.name}  -- Total Expense:  ${userDetails.total_cost}</li>`;
       console.log(userDetails,'line 218 details')
+      console.log(leaderboard, 'line 221')
     });
     
   };
+}catch(err){
+  console.log(err)
+}
 }

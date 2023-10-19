@@ -11,7 +11,7 @@ const authenticate = (req, res, next) => {
     Users.findByPk(user.userId)
       .then((user) => {
         req.user = user.id;
-        //console.log(user.id, 'm user in line 12')
+        console.log(user.id, 'm user in line 12')
         //console.log(user,' in line 15')
         next();
       })
