@@ -55,6 +55,7 @@ window.addEventListener("DOMContentLoaded", async () => {
     //console.log(token, 'm token in line 41 ec')
     for (let i = 0; i < response.data.totalXpense.length; i++) {
       showDetailOnScreen(response.data.totalXpense[i]);
+      
     }
   } catch (err) {
     console.log(err);
@@ -108,20 +109,7 @@ function removeFromScreen(expenseid) {
 }
    childele.appendChild(dbtn);
 
-/*  var ebtn = document.createElement('input');
-    ebtn.type = 'button';
-    ebtn.value = 'Edit';
-    ebtn.id = 'edit1';
 
-    ebtn.onclick = () => {
-        localStorage.removeItem(obj1.discreption);
-        document.getElementById('amount').value = obj1.amount;
-        document.getElementById('disp').value = obj1.description;
-        document.getElementById('change').value = obj1.categry;
-        
-    }
-    childele.appendChild(ebtn);
-}  */
 }
 
 function showPremiumUserMessage() {
@@ -152,35 +140,37 @@ document.getElementById("pbtn").onclick = async function (e) {
   console.log(decodeToken);
   const isPremium = decodeToken.isPremium;
 
+  
+
   let response = await axios.get(
     "http://localhost:5000/purchase/premium-membership",
-    { headers: { Authorization: token } }
+    { headers: { 'Authorization': token } }
   );
-  //console.log(response)
+  
 
   const options = {
-    key_id: response.data.key_id,
-    order_id: response.data.order.id,
-
-    handler: async function (result) {
+    'key_id': response.data.key_id,
+    'order_id': response.data.order.id,
+    
+    'handler': async function (result) {
       const response = await axios.post(
-        "http://localhost:5000/purchase/update-transaction-status",
+        'http://localhost:5000/purchase/update-transaction-status',
         {
           order_id: options.order_id,
           payment_id: result.razorpay_payment_id,
         },
-        { headers: { Authorization: token } }
+        { headers: { 'Authorization': token } }
       );
+      
 
       alert("You ara a premium user");
     
-            localStorage.setItem('isPremium', true)
+      localStorage.setItem('isPremium', true)
       if (isPremium) {
         showPremiumUserMessage();
       }
       localStorage.setItem("token", response.data.token);
-      //console.log(response,'m line 165')
-      console.log("line no 160");
+      
       showLeaderBoard();
     },
   };
