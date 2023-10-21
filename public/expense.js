@@ -140,14 +140,10 @@ document.getElementById("pbtn").onclick = async function (e) {
   console.log(decodeToken);
   const isPremium = decodeToken.isPremium;
 
-  
-
   let response = await axios.get(
     "http://localhost:5000/purchase/premium-membership",
     { headers: { 'Authorization': token } }
   );
-  
-
   const options = {
     'key_id': response.data.key_id,
     'order_id': response.data.order.id,
@@ -162,16 +158,14 @@ document.getElementById("pbtn").onclick = async function (e) {
         { headers: { 'Authorization': token } }
       );
       
-
       alert("You ara a premium user");
-    
-      localStorage.setItem('isPremium', true)
+     localStorage.setItem('isPremium', true)
       if (isPremium) {
         showPremiumUserMessage();
       }
       localStorage.setItem("token", response.data.token);
       
-      showLeaderBoard();
+      
     },
   };
 
@@ -185,6 +179,8 @@ document.getElementById("pbtn").onclick = async function (e) {
   });
 };
 
+
+showLeaderBoard()
 function showLeaderBoard() {
   try{
   const p = document.getElementById("message");
@@ -207,8 +203,8 @@ function showLeaderBoard() {
     leaderboard.innerHTML +=  '<h2>Leader Board</h2>';
     userLeaderBoardArray.data.forEach((userDetails) => {
       leaderboard.innerHTML += `<li>Name: ${userDetails.name}  -- Total Expense:  ${userDetails.total_cost}</li>`;
-      console.log(userDetails,'line 218 details')
-      console.log(leaderboard, 'line 221')
+      
+      
     });
     
   };

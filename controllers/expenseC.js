@@ -4,10 +4,10 @@ const User = require("../models/userM");
 
 module.exports.getExpenseData = async (req, res, next) => {
   try {
-    req.body.userId = req.user;
+    req.body.userId = req.user.id;
     
     const all_data = await Expense.findAll({
-      where: { userId: req.body.userId },
+      where: { userId: req.user.id },
     });
     //console.log(req.body.userId, 'm user id  line 9')
 
@@ -18,22 +18,22 @@ module.exports.getExpenseData = async (req, res, next) => {
 };
 
 module.exports.postExpenseData = async (req, res, next) => {
-  //try {
-    req.body.userId = req.user;
-    console.log(req.user,'line 31 ssssssss') 
+  try {
+    req.body.userId = req.user.id
     const {amount, description, category} = req.body
-    Expense.create(req.body).then(expense => { 
-     
-    const totalXpense = Number(req.user.total_cost) + Number(amount)
-    console.log( totalXpense, 'line 26 dddddddddd')
-    User.update({
+    
+    const data = await Expense.create(req.body)    
+     const totalXpense = Number(req.user.total_cost) + Number(amount)
+    console.log( req.user.total_cost, 'line 26 dddddddddd')
+    await User.update({
       total_cost: totalXpense
     },{
-      where: {id: req.user}
+      where: {id: req.user.id}
     })
+  
     
     res.status(201).json({ newDetails: data })
-  }).catch (err => { console.log(err)})
+  }catch (err) { console.log(err)}
    
 };
 
