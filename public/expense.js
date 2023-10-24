@@ -24,7 +24,7 @@ async function xpenseManager(event) {
       obj1,
       { headers: { Authorization: token } }
     );
-    //console.log(response.data.newDetails)
+    
 
     showDetailOnScreen(response.data.newDetails); //why the function of this written after bracket
   } catch (err) {
@@ -40,9 +40,9 @@ window.addEventListener("DOMContentLoaded", async () => {
     if (token == null) {
       location = "http://localhost:5000/login.html";
     }
-    //console.log(token, 'm token in line 39 ec')
+    
     const decodeToken = parseJwt(token);
-    //console.log(decodeToken, "m decode");
+    
     if (decodeToken.isPremium) {
       showPremiumUserMessage()
       showLeaderBoard();
@@ -52,7 +52,7 @@ window.addEventListener("DOMContentLoaded", async () => {
       "http://localhost:5000/expense/expense-data",
       { headers: { Authorization: token } }
     );
-    //console.log(token, 'm token in line 41 ec')
+    
     for (let i = 0; i < response.data.totalXpense.length; i++) {
       showDetailOnScreen(response.data.totalXpense[i]);
       
@@ -85,14 +85,14 @@ function showDetailOnScreen(obj1) {
   }
 
 async function deleteXpense(expenseid) {
-  //console.log(expenseid,'m expense id line 71')
+ 
   try {
     const token = window.localStorage.getItem("token");
     await axios.delete(
       `http://localhost:5000/expense/delete-expense/${expenseid}`,
       { headers: { Authorization: token } }
     );
-    //console.log(expenseid,'m expense id line 75')
+    
 
     removeFromScreen(expenseid);
   } catch (err) {
@@ -137,19 +137,27 @@ function parseJwt(token) {
 document.getElementById("pbtn").onclick = async function (e) {
   const token = localStorage.getItem("token");
   const decodeToken = parseJwt(token);
-  console.log(decodeToken);
   const isPremium = decodeToken.isPremium;
 
   let response = await axios.get(
     "http://localhost:5000/purchase/premium-membership",
     { headers: { 'Authorization': token } }
   );
+  
   const options = {
-    'key_id': response.data.key_id,
+    'key': response.data.key_id,
     'order_id': response.data.order.id,
     
+    "prefill": {
+      "name": "Test User",
+      "email": "test.user@example.com",
+      "contact": "9702032235"
+    },
+    
+     // This handler function will handle the success payment
     'handler': async function (result) {
-      const response = await axios.post(
+      
+     let response =  await axios.post(
         'http://localhost:5000/purchase/update-transaction-status',
         {
           order_id: options.order_id,
@@ -162,25 +170,34 @@ document.getElementById("pbtn").onclick = async function (e) {
      localStorage.setItem('isPremium', true)
       if (isPremium) {
         showPremiumUserMessage();
+        
       }
       localStorage.setItem("token", response.data.token);
-      
+      showLeaderBoard()
       
     },
   };
 
   const rzp1 = new Razorpay(options);
-  rzp1.open();
-  e.preventDefault();
-
-  rzp1.on("payment.failed", function (response) {
+  rzp1.on('payment.failed', function (response){
+    alert(response.error.code);
+    alert(response.error.description);
+   // alert(response.error.source);
+   // alert(response.error.step);
+   // alert(response.error.reason);
+    alert(response.error.metadata.order_id);
+    alert(response.error.metadata.payment_id);
     console.log(response);
     alert("Some thing went wrong");
-  });
+});
+
+
+  rzp1.open();
+  e.preventDefault();
 };
 
 
-showLeaderBoard()
+
 function showLeaderBoard() {
   try{
   const p = document.getElementById("message");
@@ -196,8 +213,7 @@ function showLeaderBoard() {
     const token = localStorage.getItem("token");
 
     const userLeaderBoardArray = await axios.get('http://localhost:5000/features/show-premium-features', {headers: {'Authorization': token}})
-    //console.log(userLeaderBoardArray, 'm line 211')
-   
+    
 
     const leaderboard = document.getElementById("lboard");
     leaderboard.innerHTML +=  '<h2>Leader Board</h2>';
