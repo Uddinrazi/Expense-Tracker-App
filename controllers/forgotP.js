@@ -8,11 +8,12 @@ const ForgotPassword = require('../models/forgotP')
 module.exports.forgotPassword = async(req, res, next) => {
     try{
     const {email} = req.body
-    console.log(email,'line 11 emaillllllllll')
+    //req.body.userId = req.user.id
+     //console.log(req.body.userId, 'line 15 idddddd')
     const user = await User.findOne({where: {email: req.body.email}})
     if(user){
         const id = uuid.v4();
-        console.log(id, 'line 15 idddddd')
+       
        user.createForgotPassword({id, active: true})
        /*.catch(err => {
             throw new Error(err)
@@ -31,15 +32,17 @@ const receivers = [{
   email: email
 }]
 
- tranEmailApi.sendTransacEmail({
+ let response = await tranEmailApi.sendTransacEmail({
   sender,
   to:  receivers,
   subject: 'craete a new password',
-  textContent:`Kindly create a new password through this link`,
-  html: `<a href="http://localhost:5000/password/reset-password/${id}">Reset password</a>`,
-}).then((response) => {
-return res.status(response[0].statusCode).json({message: 'Link to reset password sent to your mail ', sucess: true})
-}).catch(console.log)
+  text:`create a new password through this link -http://localhost:5000/password/reset-password/${id}`,
+  //html: `<a href="http://localhost:5000/password/reset-password/${id}">Reset password</a>`,
+})
+
+console.log(response, 'line 43 pppppppppp')
+return res.status(202).json({message: 'Link to reset password sent to your mail ', sucess: true})
+
 
     }
     else{
@@ -80,11 +83,11 @@ module.exports.updatePassword = async (req, res, next) => {
     try{
         const {newpassword} = req.query;
         const {resetpasswordid} =  req.params
-        //req.body.userId = req.user.id;
-        const resetPassReq = await ForgotPassword.findOne({where: {id: resetpasswordid}})
         
+        const resetPassReq = await ForgotPassword.findOne({where: {id: resetpasswordid}})
+        const userId = req.user.id
         let user = await User.findOne({where: {id: resetPassReq.userId}})
-        console.log()
+        
         if(user){
             const saltRounds = 10;
             bycrypt.genSalt(saltRounds, async function(err,hash){

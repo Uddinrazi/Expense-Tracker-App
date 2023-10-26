@@ -1,4 +1,4 @@
-const Users = require("../models/userM");
+const User = require("../models/userM");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 function isStringInvalid(string) {
@@ -21,7 +21,7 @@ const postUserInfo = async (req, res, next) => {
     }
     const saltrounds = 10;
     bcrypt.hash(password, saltrounds, async (err, hash) => {
-      await Users.create({ name, email, password: hash });
+      await User.create({ name, email, password: hash });
       res.status(201).json({ message: "New user craeted" });
     });
   } catch (err) {
@@ -44,7 +44,7 @@ const postLoginInfo = async (req, res, next) => {
   if (isStringInvalid(email) || isStringInvalid(password)) {
     res.status(400).json({ message: "some thing is missing" });
   }
-  const user = await Users.findAll({ where: { email: email } });
+  const user = await User.findAll({ where: { email: email } });
   if (user.length > 0) {
     bcrypt.compare(password, user[0].password, (err, result) => {
       if (err) {

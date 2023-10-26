@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const Users = require("../models/userM");
+const User = require("../models/userM");
 
 const authenticate = (req, res, next) => {
   try {
@@ -8,11 +8,11 @@ const authenticate = (req, res, next) => {
 
     const user = jwt.verify(token, "jdfkjskjfndi83eeu873g28uew");
     console.log(user,'line no 10');
-    Users.findByPk(user.userId.id)
+    User.findByPk(user.userId)
       .then((user) => {
         req.user = user,
         
-       // console.log(user.total_cost, 'm user in line 12')
+        console.log(user.id, 'm user in line 15 jjjjjjj')
         //console.log(user,' in line 15')
         next();
       })

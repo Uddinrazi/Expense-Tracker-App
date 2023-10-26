@@ -16,7 +16,7 @@ const purchaseRoutes = require("./routes/purchase");
 const featuresRoutes = require("./routes/premiumFeatures");
 const forgotP = require("./routes/forgotP");
 
-const Users = require("./models/userM");
+const User = require("./models/userM");
 const Expense = require("./models/expenseM");
 const Order = require("./models/order");
 const ForgotPassword = require('./models/forgotP')
@@ -43,14 +43,14 @@ app.use("/purchase", purchaseRoutes);
 app.use('/features', featuresRoutes)
 app.use('/password', forgotP)
 
-Users.hasMany(Expense);
-Expense.belongsTo(Users);
+User.hasMany(Expense);
+Expense.belongsTo(User);
 
-Users.hasMany(Order);
-Order.belongsTo(Users);
+User.hasMany(Order);
+Order.belongsTo(User);
 
-Users.hasMany(ForgotPassword);
-ForgotPassword.belongsTo(Users);
+User.hasMany(ForgotPassword);
+ForgotPassword.belongsTo(User);
 
 sequelize
   .sync({ force: false })

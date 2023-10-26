@@ -24,9 +24,9 @@ module.exports.postExpenseData = async (req, res, next) => {
     
     req.body.userId = req.user.id
     const {amount, description, category} = req.body
-    
+    console.log(req.user, 'line 27 hhhhhhhhh')
     const data = await Expense.create(req.body,{transaction: t})    
-     const totalXpense = Number(req.user.total_cost) + Number(amount)
+    const totalXpense = Number(req.user.total_cost) + Number(amount)
     console.log( req.user.total_cost, 'line 26 dddddddddd')
     await User.update({
       total_cost: totalXpense
