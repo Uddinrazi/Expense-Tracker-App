@@ -15,11 +15,13 @@ const expenseRoutes = require("./routes/expenseR");
 const purchaseRoutes = require("./routes/purchase");
 const featuresRoutes = require("./routes/premiumFeatures");
 const forgotP = require("./routes/forgotP");
+const downloadRoutes = require("./routes/download");
 
 const User = require("./models/userM");
 const Expense = require("./models/expenseM");
 const Order = require("./models/order");
 const ForgotPassword = require('./models/forgotP')
+const File = require('./models/files')
 
 require("dotenv").config();
 
@@ -42,6 +44,7 @@ app.use("/expense", expenseRoutes);
 app.use("/purchase", purchaseRoutes);
 app.use('/features', featuresRoutes)
 app.use('/password', forgotP)
+app.use('/dwnload', downloadRoutes);
 
 User.hasMany(Expense);
 Expense.belongsTo(User);
@@ -51,6 +54,9 @@ Order.belongsTo(User);
 
 User.hasMany(ForgotPassword);
 ForgotPassword.belongsTo(User);
+
+User.hasMany(File);
+File.belongsTo(User)
 
 sequelize
   .sync({ force: false })
