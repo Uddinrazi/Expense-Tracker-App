@@ -35,6 +35,7 @@ async function xpenseManager(event) {
 
 window.addEventListener("DOMContentLoaded", async () => {
   try {
+    const page = 1;
     const token = localStorage.getItem("token");
     if (token == null) {
       location = "http://localhost:5000/login.html";
@@ -47,19 +48,23 @@ window.addEventListener("DOMContentLoaded", async () => {
       showLeaderBoard();
     }
     let response = await axios.get(
-      "http://localhost:5000/expense/expense-data",
+      "http://localhost:5000/expense/expense-data?page=1&limit=5", //how to pass query in params
       { headers: { Authorization: token } }
     );
 
-    for (let i = 0; i < response.data.totalXpense.length; i++) {
-      showDetailOnScreen(response.data.totalXpense[i]);
+    for (let i = 0; i < response.data.length; i++) {
+      showDetailOnScreen(response.data.expenses);
+      console.log(response.data.expenses,'..............')
     }
+    showPagination(response.data)
+    
   } catch (err) {
     console.log(err);
   }
 });
 
 function showDetailOnScreen(obj1) {
+  //console.log(response)
   const parentEle = document.getElementById("details");
   const childele = document.createElement("li");
 
@@ -217,23 +222,27 @@ async function download() {
   try {
     const token = localStorage.getItem("token");
     
-    let response = await axios.get(
+    let respons = await axios.get(
       "http://localhost:5000/dwnload/download-expense",
       { headers: { Authorization: token } }
     );
     
-    if (response.status === 200) {
+    if (respons.status === 200) {
       //the bcakend is essentially sending a download link
       //  which if we open in browser, the file would download
       console.log('line 228 working')
       let a = document.createElement("a");
-      a.href = response.data.fileUrl;
-      const fileDownload = response.data.fileUrl;
+      a.href = respons.data.fileUrl;
+      const fileDownload = respons.data.fileUrl;
       a.click();
       a.download = "myexpense.csv";
+      console.log(fileDownload)
+
+      //let li = document.createElement(li)
+      document.body.innerHTML += `<a href> ${fileDownload}</a>`
       
     } else {
-      throw new Error(response.data.message);
+      throw new Error(respons.data.message);
     }
   } catch (err) {
     console.log(err);
@@ -241,3 +250,34 @@ async function download() {
 }
 
 
+function showPagination({
+  currentPage,
+  hasNextPage,
+  nextPage,
+  hasPreviousPage,
+  previousPage,
+  lastPage
+}) {
+  console.log('line no 259')
+  const pagination = document.querySelector('pagination')
+  pagination.innerHTML = '';
+
+  if(hasPreviousPage){
+    const btn2 = document.createElement('button')
+    btn2.innerHTML = previousPage;
+    btn2.addEventListener('click', () => getExpenses(previousPage))
+    pagination.appendChild(btn2)
+  }
+
+  const btn1 = document.createElement('button')
+  btn1.innerHTML = `<h4>${currentPage}</h4>`
+  btn1.addEventListener('click', () => getExpenses(currentPage))
+  pagination.appendChild(btn1)
+
+  if(hasNextPage){
+    const btn3 = document.createElement('btn3')
+    btn3.innerHTML = nextPage;
+    btn3.addEventListener('click', () => getExpenses(nextPage))
+    pagination.appendChild(btn3)
+  }
+}

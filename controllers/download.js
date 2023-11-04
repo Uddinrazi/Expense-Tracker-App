@@ -12,6 +12,7 @@ module.exports.downloadExpense = async(req, res, next) => {
         const userId = req.user.id;
         const filename =`'Expense${userId}/${new Date()}.txt`
         const fileUrl = await S3Services.uploadToS3(stringfiedexpense, filename);
+        await File.create({fileUrl, userId});
         //const dwnloadedFile = fileUrl
         res.status(200).json({fileUrl, success:true})
         //console.log(fileUrl, 'line 6 kkkkkkkk')
@@ -22,18 +23,18 @@ module.exports.downloadExpense = async(req, res, next) => {
     }
 }
 
-module.exports.downloadFiles = async (req, res, next) => {
+/*module.exports.downloadFiles = async (req, res, next) => {
     console.log('line 29 hhhhhhhh')
     try{
         const {fileDownload} = req.body
         userId = req.user.id;
         
-        await File.create({fileDownload, userId});
+        
           res.status(201).json({ message: "file link saved" });
     }
     catch(err){
         console.log(err)
     }
    
-}
+} */
 
