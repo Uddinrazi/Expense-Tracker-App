@@ -35,7 +35,7 @@ async function xpenseManager(event) {
 
 window.addEventListener("DOMContentLoaded", async () => {
   try {
-    const page = 1;
+    
     const token = localStorage.getItem("token");
     if (token == null) {
       location = "http://localhost:5000/login.html";
@@ -47,8 +47,10 @@ window.addEventListener("DOMContentLoaded", async () => {
       showPremiumUserMessage();
       showLeaderBoard();
     }
-    let response = await axios.get(
-      "http://localhost:5000/expense/expense-data?page=1&limit=5", //how to pass query in params
+
+    getExpenses(1,10)
+   /* let response = await axios.get(
+      "http://localhost:5000/expense/expense-data?page=2&limit=10", //how to pass query in params
       { headers: { Authorization: token } }
     );
 
@@ -56,7 +58,7 @@ window.addEventListener("DOMContentLoaded", async () => {
       showDetailOnScreen(response.data.expenses);
       console.log(response.data.expenses,'..............')
     }
-    showPagination(response.data)
+    showPagination(response.data) */
     
   } catch (err) {
     console.log(err);
@@ -64,7 +66,7 @@ window.addEventListener("DOMContentLoaded", async () => {
 });
 
 function showDetailOnScreen(obj1) {
-  //console.log(response)
+  
   const parentEle = document.getElementById("details");
   const childele = document.createElement("li");
 
@@ -250,34 +252,43 @@ async function download() {
 }
 
 
-function showPagination({
-  currentPage,
-  hasNextPage,
-  nextPage,
-  hasPreviousPage,
-  previousPage,
-  lastPage
-}) {
+function showPagination(data) {
   console.log('line no 259')
-  const pagination = document.querySelector('pagination')
+  const pagination = document.getElementById('pagination')
   pagination.innerHTML = '';
-
-  if(hasPreviousPage){
+console.log(data)
+  if(data.hasPreviousPage){
     const btn2 = document.createElement('button')
-    btn2.innerHTML = previousPage;
-    btn2.addEventListener('click', () => getExpenses(previousPage))
+    btn2.innerHTML = data.currentPage -1;
+    btn2.addEventListener('click', () => getExpenses(data.currentPage -1, 10))
     pagination.appendChild(btn2)
   }
 
   const btn1 = document.createElement('button')
-  btn1.innerHTML = `<h4>${currentPage}</h4>`
-  btn1.addEventListener('click', () => getExpenses(currentPage))
+  btn1.innerHTML = `<h4>${data.currentPage}</h4>`
+  btn1.addEventListener('click', () => getExpenses(data.currentPage, 10))
   pagination.appendChild(btn1)
 
-  if(hasNextPage){
+  if(data.hasNextPage){
     const btn3 = document.createElement('btn3')
-    btn3.innerHTML = nextPage;
-    btn3.addEventListener('click', () => getExpenses(nextPage))
+    btn3.innerHTML = data.currentPage + 1;
+    btn3.addEventListener('click', () => getExpenses(data.currentPage +1, 10))
     pagination.appendChild(btn3)
   }
+}
+
+async function getExpenses(page,limit) {
+ 
+  const token = localStorage.getItem('token');
+  const response = await axios.get(`http://localhost:5000/expense/expense-data?page=${page}&limit=${limit}`, {
+      headers: {
+          "Authorization": token
+      }
+  });
+  
+  document.getElementById('details').innerHTML = '';
+  response.data.expense.map((data) => {
+    showDetailOnScreen(data)
+  })
+  showPagination(response.data);
 }

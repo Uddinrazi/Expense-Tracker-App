@@ -3,29 +3,30 @@ const User = require("../models/userM");
 const sequelize = require('../util/db')
 
 
-const Items_per_page = 2;
+
 module.exports.getExpenseData = async (req, res, next) => {
   try {
     req.body.userId = req.user.id;
-    
+    const Items_per_page = +req.query.limit || 4;
     const page = +req.query.page || 1
 
     let totalItems;
-
+    console.log(req.query, 'line 14')
     let total = await Expense.count()
     totalItems = total;
+    
     return Expense.findAll({
       offset: (page-1) * Items_per_page,
       limit : Items_per_page
     }).then((expenses) => {
-
+      
       res.json({
         expense: expenses,
         currentPage: page,
         hasNextPage: Items_per_page * page < totalItems,
-        nextPage: page +1,
+        //nextPage: page + 1,
         hasPreviousPage : page > 1,
-        previousPage: page - 1,
+        //previousPage: page - 1,
         lastPage: Math.ceil(totalItems/Items_per_page)
       })
     })
