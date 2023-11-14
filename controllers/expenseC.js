@@ -1,25 +1,31 @@
 const Expense = require("../models/expenseM");
 const User = require("../models/userM");
 const sequelize = require('../util/db')
+const File = require("../models/files");
 
 
 
 module.exports.getExpenseData = async (req, res, next) => {
   try {
     req.body.userId = req.user.id;
+    console.log(req.body.userId, 'line 54 hhhhhhhhh')
     const Items_per_page = +req.query.limit || 4;
     const page = +req.query.page || 1
 
     let totalItems;
-    console.log(req.query, 'line 14')
+    
     let total = await Expense.count()
     totalItems = total;
-    
+    const {fileDownloaded} = req.body
+    let result = await File.findAll({where: {fileUrl: fileDownloaded }})
+    console.log(result, 'line 21 rrrrrrrrrr')
     return Expense.findAll({
+      where: {userId: req.body.userId},
       offset: (page-1) * Items_per_page,
       limit : Items_per_page
     }).then((expenses) => {
       
+     
       res.json({
         expense: expenses,
         currentPage: page,
@@ -27,7 +33,8 @@ module.exports.getExpenseData = async (req, res, next) => {
         //nextPage: page + 1,
         hasPreviousPage : page > 1,
         //previousPage: page - 1,
-        lastPage: Math.ceil(totalItems/Items_per_page)
+        lastPage: Math.ceil(totalItems/Items_per_page),
+        result
       })
     })
     .catch((err) => {
@@ -51,7 +58,7 @@ module.exports.postExpenseData = async (req, res, next) => {
     
     req.body.userId = req.user.id
     const {amount, description, category} = req.body
-    console.log(req.user, 'line 27 hhhhhhhhh')
+    
     const data = await Expense.create(req.body,{transaction: t})    
     const totalXpense = Number(req.user.total_cost) + Number(amount)
     console.log( req.user.total_cost, 'line 26 dddddddddd')

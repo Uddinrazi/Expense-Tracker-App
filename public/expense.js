@@ -47,18 +47,11 @@ window.addEventListener("DOMContentLoaded", async () => {
       showPremiumUserMessage();
       showLeaderBoard();
     }
-
-    getExpenses(1,10)
-   /* let response = await axios.get(
-      "http://localhost:5000/expense/expense-data?page=2&limit=10", //how to pass query in params
-      { headers: { Authorization: token } }
-    );
-
-    for (let i = 0; i < response.data.length; i++) {
-      showDetailOnScreen(response.data.expenses);
-      console.log(response.data.expenses,'..............')
+    
+    getExpenses(1,5)
+    if(download){
+    showDownloadedFiles(file)
     }
-    showPagination(response.data) */
     
   } catch (err) {
     console.log(err);
@@ -165,11 +158,10 @@ document.getElementById("pbtn").onclick = async function (e) {
 
       alert("You ara a premium user");
       localStorage.setItem("isPremium", true);
-      if (isPremium) {
-        showPremiumUserMessage();
-      }
       localStorage.setItem("token", response.data.token);
+      showPremiumUserMessage();
       showLeaderBoard();
+     
     },
   };
 
@@ -180,9 +172,9 @@ document.getElementById("pbtn").onclick = async function (e) {
     // alert(response.error.source);
     // alert(response.error.step);
     // alert(response.error.reason);
-    alert(response.error.metadata.order_id);
-    alert(response.error.metadata.payment_id);
-    console.log(response);
+    //alert(response.error.metadata.order_id);
+    //alert(response.error.metadata.payment_id);
+    //console.log(response);
     alert("Some thing went wrong");
   });
 
@@ -239,9 +231,10 @@ async function download() {
       a.click();
       a.download = "myexpense.csv";
       console.log(fileDownload)
-
+      showDownloadedFiles(respons.data.fileUrl)
       //let li = document.createElement(li)
-      document.body.innerHTML += `<a href> ${fileDownload}</a>`
+     // document.body.innerHTML += `<h4>Downloaded Files</h4>
+                             //   <a href> ${fileDownload}</a>`
       
     } else {
       throw new Error(respons.data.message);
@@ -251,28 +244,30 @@ async function download() {
   }
 }
 
-
+function showDownloadedFiles(file){
+  document.body.innerHTML += `<h4>Downloaded Files</h4>
+  <a href> ${file}</a>`
+}
 function showPagination(data) {
-  console.log('line no 259')
   const pagination = document.getElementById('pagination')
   pagination.innerHTML = '';
 console.log(data)
   if(data.hasPreviousPage){
     const btn2 = document.createElement('button')
     btn2.innerHTML = data.currentPage -1;
-    btn2.addEventListener('click', () => getExpenses(data.currentPage -1, 10))
+    btn2.addEventListener('click', () => getExpenses(data.currentPage -1, 5))
     pagination.appendChild(btn2)
   }
 
   const btn1 = document.createElement('button')
   btn1.innerHTML = `<h4>${data.currentPage}</h4>`
-  btn1.addEventListener('click', () => getExpenses(data.currentPage, 10))
+  btn1.addEventListener('click', () => getExpenses(data.currentPage, 5))
   pagination.appendChild(btn1)
 
   if(data.hasNextPage){
     const btn3 = document.createElement('btn3')
     btn3.innerHTML = data.currentPage + 1;
-    btn3.addEventListener('click', () => getExpenses(data.currentPage +1, 10))
+    btn3.addEventListener('click', () => getExpenses(data.currentPage +1, 5))
     pagination.appendChild(btn3)
   }
 }

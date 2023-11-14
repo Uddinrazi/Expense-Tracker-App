@@ -18,7 +18,7 @@ async function submit(e) {
             document.body.innerHTML += '<div style="color:red;">Mail Successfuly sent <div>'
         }
         else {
-            throw new Error('Some went wrong......')
+            throw new Error( 'Some went wrong......')
         }
         console.log(response,'line 16 ressss')
     }

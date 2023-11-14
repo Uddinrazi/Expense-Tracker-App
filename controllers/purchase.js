@@ -33,6 +33,8 @@ module.exports.purchase_premium = async (req, res, next) => {
   }
 };
 
+
+
 module.exports.updateTransactionStatus = async (req, res, next) => {
   try {
     const { payment_id, order_id } = req.body;
@@ -53,8 +55,8 @@ module.exports.updateTransactionStatus = async (req, res, next) => {
       }
     );
 
-    Promise.all([promise1, promise2])
-      .then(() => {
+   await Promise.all([promise1, promise2])
+      
         const userId = req.user;
 
         return res.status(202).json({
@@ -62,29 +64,22 @@ module.exports.updateTransactionStatus = async (req, res, next) => {
           message: " transaction successfull",
           token: userController.generateAccessToken(userId, undefined, true),
         });
-      })
-
-      .catch((err) => {
-        if (payment_id == null || payment_id == undefined) {
-          Order.update(
-            { status: "FSILED" },
-            {
-              where: {
-                orderid: order_id,
-              },
-            }
-          );
-          
-          User.update({ ispremium: false });
+      }
+catch (err) {
+    if (payment_id == null || payment_id == undefined) {
+      Order.update(
+        { status: "FAILED" },
+        {
+          where: {
+            orderid: order_id,
+          },
         }
-        res.status(400).json({ success: false, message: "payment failed " });
-        console.log(err);
-      });
-    
-  
-  } catch (err) {
-    console.log(err);
+      );
+      
+      User.update({ ispremium: false });
+    }
     res.status(400).json({ success: false, message: "payment failed " });
+    console.log(err);
   }
 };
 

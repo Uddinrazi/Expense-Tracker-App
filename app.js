@@ -1,6 +1,8 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
+const morgan = require('morgan');
+const fs = require('fs')
 
 const sequelize = require("./util/db");
 const path = require("path");
@@ -10,12 +12,18 @@ require("dotenv").config();
 
 
 app.use(express.json());
+
+const accessLogStream = fs.createWriteStream(path.join(__dirname,'access.log'), {flags: 'a'})
+app.use(morgan('combined', {stream: accessLogStream}))
+
 const signupRoutes = require("./routes/userR");
 const expenseRoutes = require("./routes/expenseR");
 const purchaseRoutes = require("./routes/purchase");
 const featuresRoutes = require("./routes/premiumFeatures");
 const forgotP = require("./routes/forgotP");
 const downloadRoutes = require("./routes/download");
+
+
 
 const User = require("./models/userM");
 const Expense = require("./models/expenseM");
