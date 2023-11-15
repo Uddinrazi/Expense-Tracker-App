@@ -16,9 +16,7 @@ module.exports.getExpenseData = async (req, res, next) => {
     
     let total = await Expense.count()
     totalItems = total;
-    const {fileDownloaded} = req.body
-    let result = await File.findAll({where: {fileUrl: fileDownloaded }})
-    console.log(result, 'line 21 rrrrrrrrrr')
+    
     return Expense.findAll({
       where: {userId: req.body.userId},
       offset: (page-1) * Items_per_page,
@@ -34,19 +32,14 @@ module.exports.getExpenseData = async (req, res, next) => {
         hasPreviousPage : page > 1,
         //previousPage: page - 1,
         lastPage: Math.ceil(totalItems/Items_per_page),
-        result
+        
       })
     })
     .catch((err) => {
       throw new Error(err)
     })
 
-   /* const all_data = await Expense.findAll({
-      where: { userId: req.user.id },
-    });*/
-    //console.log(req.body.userId, 'm user id  line 9')
-
- //   res.status(200).json({ totalXpense: all_data });
+   
   } catch (err) {
     console.log(err);
   }

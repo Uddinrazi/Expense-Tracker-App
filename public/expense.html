@@ -8,9 +8,13 @@
     <title>Expense Tracker App</title>
 </head>
 <body>
+    <header class="header">
+        <h3> Expense Tracker App</h3>
+        <button id="logout">Logout</button>
+    </header>
     <section>
     
-        
+
             <form id="my-form" onsubmit="xpenseManager(event)"> 
             <label for="amount">Choose amount: </label> 
             <input type="text" id="amount" ><br>
@@ -38,6 +42,7 @@
 						<option value="gifts">Gifts</option>
 						<option value="insurance">Insurance</option>
 						<option value="transportation">Transportation</option>
+                        <option value="festivals">Festivals</option>
 						<option value="savings">Savings</option>
 						<option value="investments">Investments</option>
 						<option value="bills">Bills</option>
@@ -52,12 +57,13 @@
             
         </section>
         <button onclick="download()" id="downloadexpense">Download File</button>
+        
             <h4 id="message"></h4>
             <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
             
             <div id="lboard"></div>
             <div id="pagination"></div>
-            
+            <h4 id="downloadurl">Downloaded files Url </h4>
 
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.3.4/axios.min.js"></script>

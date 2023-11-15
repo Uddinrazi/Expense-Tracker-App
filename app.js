@@ -3,12 +3,12 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const morgan = require('morgan');
 const fs = require('fs')
-
+require("dotenv").config();
 const sequelize = require("./util/db");
 const path = require("path");
 const app = express();
 
-require("dotenv").config();
+
 
 
 app.use(express.json());
@@ -31,7 +31,7 @@ const Order = require("./models/order");
 const ForgotPassword = require('./models/forgotP')
 const File = require('./models/files')
 
-require("dotenv").config();
+//require("dotenv").config();
 
 app.use(express.static(path.join(__dirname, "/public")));
 

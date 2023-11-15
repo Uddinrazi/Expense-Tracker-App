@@ -49,9 +49,7 @@ window.addEventListener("DOMContentLoaded", async () => {
     }
     
     getExpenses(1,5)
-    if(download){
-    showDownloadedFiles(file)
-    }
+    
     
   } catch (err) {
     console.log(err);
@@ -74,8 +72,7 @@ function showDetailOnScreen(obj1) {
   dbtn.id = obj1.id;
 
   dbtn.onclick = (e) => {
-    //console.log(e.target.id)
-    //localStorage.removeItem(obj1.discreption);
+    
     deleteXpense(e.target.id);
     parentEle.removeChild(childele);
   };
@@ -211,7 +208,7 @@ function showLeaderBoard() {
   }
 }
 
-//download()
+
 async function download() {
   try {
     const token = localStorage.getItem("token");
@@ -227,27 +224,26 @@ async function download() {
       console.log('line 228 working')
       let a = document.createElement("a");
       a.href = respons.data.fileUrl;
-      const fileDownload = respons.data.fileUrl;
+      localStorage.setItem('filelink',respons.data.fileUrl )
+      
       a.click();
       a.download = "myexpense.csv";
-      console.log(fileDownload)
-      showDownloadedFiles(respons.data.fileUrl)
-      //let li = document.createElement(li)
-     // document.body.innerHTML += `<h4>Downloaded Files</h4>
-                             //   <a href> ${fileDownload}</a>`
-      
-    } else {
-      throw new Error(respons.data.message);
-    }
+     
+      showDownloadedFiles()
+    } 
   } catch (err) {
     console.log(err);
   }
 }
 
-function showDownloadedFiles(file){
-  document.body.innerHTML += `<h4>Downloaded Files</h4>
-  <a href> ${file}</a>`
+function showDownloadedFiles(){
+  const file = localStorage.getItem('filelink')
+  let durl = document.getElementById('downloadurl')
+  durl.innerHTML += `<ul><a href> ${file}</a><ul>`
+ 
 }
+
+
 function showPagination(data) {
   const pagination = document.getElementById('pagination')
   pagination.innerHTML = '';
@@ -287,3 +283,10 @@ async function getExpenses(page,limit) {
   })
   showPagination(response.data);
 }
+
+const logout = document.getElementById('logout')
+
+logout.addEventListener('click', () => {
+  localStorage.clear();
+  location = 'http://localhost:5000/login.html'
+})
