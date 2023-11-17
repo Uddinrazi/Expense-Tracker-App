@@ -1,4 +1,3 @@
-const UserServices = require("../services/userservices");
 const S3Services = require("../services/S3services");
 const File = require('../models/files')
 
@@ -7,8 +6,8 @@ const File = require('../models/files')
 
 module.exports.downloadExpense = async(req, res, next) => {
     try {
-        const expense = await UserServices.getExpenses(req)
-        console.log(getExpenses, 'line 11')
+        const expense = await req.user.getExpenses()
+    
         const stringfiedexpense = JSON.stringify(expense)
         const userId = req.user.id;
         const filename =`'Expense${userId}/${new Date()}.txt`

@@ -6,10 +6,10 @@ const authenticate = async (req, res, next) => {
     const token = req.header("Authorization");
     console.log(token, "hey m token");
 
-    const users = jwt.verify(token, "jdfkjskjfndi83eeu873g28uew");
-   
-   let user = await User.findByPk(users.userId)
+    const users = jwt.verify(token, process.env.TOKEN_SECRET);
     console.log(users,'line 12 in auth')
+   let user = await User.findByPk(users.userId)
+    
       
         req.user = user,
         

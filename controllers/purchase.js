@@ -66,7 +66,7 @@ module.exports.updateTransactionStatus = async (req, res, next) => {
         });
       }
 catch (err) {
-    if (payment_id == null || payment_id == undefined) {
+    
       Order.update(
         { status: "FAILED" },
         {
@@ -77,7 +77,7 @@ catch (err) {
       );
       
       User.update({ ispremium: false });
-    }
+    
     res.status(400).json({ success: false, message: "payment failed " });
     console.log(err);
   }

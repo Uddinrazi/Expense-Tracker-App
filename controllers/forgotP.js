@@ -9,16 +9,13 @@ const ForgotPassword = require('../models/forgotP')
 module.exports.forgotPassword = async(req, res, next) => {
     try{
     const {email} = req.body
-    //req.body.userId = req.user.id
-     //console.log(req.body.userId, 'line 15 idddddd')
+    
     const user = await User.findOne({where: {email: req.body.email}})
     if(user){
         const id = uuid.v4();
-       console.log(id,'iiiiiiiiiidddddddd')
+       
        await user.createForgotPassword({id, active: true, userId: user.id})
-       /*.catch(err => {
-            throw new Error(err)
-        }) */
+      
 
 const client = Sib.ApiClient.instance
 const apiKey = client.authentications['api-key']

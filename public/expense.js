@@ -29,7 +29,7 @@ async function xpenseManager(event) {
   } catch (err) {
     console.log(err);
     document.body.innerHTML =
-      document.body.innerHTML + "<h3> Some thing went wrong </h3>";
+      document.body.innerHTML + "<h4> Some thing went wrong </h4>";
   }
 }
 
@@ -46,7 +46,11 @@ window.addEventListener("DOMContentLoaded", async () => {
     if (decodeToken.isPremium) {
       showPremiumUserMessage();
       showLeaderBoard();
+      
+      showDownloadedFiles()
+      
     }
+    
     
     getExpenses(1,5)
     
@@ -101,10 +105,13 @@ function showDetailOnScreen(obj1) {
   childele.appendChild(dbtn);
 }
 
+
 function showPremiumUserMessage() {
   document.getElementById("pbtn").style.visibility = "hidden";
   document.getElementById("message").innerHTML = "You are a premium user";
 }
+
+
 
 function parseJwt(token) {
   var base64Url = token.split(".")[1];
@@ -207,10 +214,19 @@ function showLeaderBoard() {
     console.log(err);
   }
 }
-
-
+download()
 async function download() {
   try {
+    const p = document.getElementById("msg");
+    var dbtn = document.createElement("input");
+    dbtn.type = "button";
+    dbtn.value = "Download";
+    dbtn.id = "download";
+   
+    p.appendChild(dbtn);
+    
+
+    document.getElementById("download").onclick = async () => {
     const token = localStorage.getItem("token");
     
     let respons = await axios.get(
@@ -224,21 +240,25 @@ async function download() {
       console.log('line 228 working')
       let a = document.createElement("a");
       a.href = respons.data.fileUrl;
-      localStorage.setItem('filelink',respons.data.fileUrl )
+    
+     localStorage.setItem('filelink',respons.data.fileUrl)
       
       a.click();
       a.download = "myexpense.csv";
-     
       showDownloadedFiles()
     } 
-  } catch (err) {
+  } 
+}catch (err) {
     console.log(err);
   }
 }
 
+
+
 function showDownloadedFiles(){
-  const file = localStorage.getItem('filelink')
-  let durl = document.getElementById('downloadurl')
+  let file = localStorage.getItem('filelink')
+  let durl = document.getElementById('downloadurl');
+  durl.removeAttribute("hidden");
   durl.innerHTML += `<ul><a href> ${file}</a><ul>`
  
 }

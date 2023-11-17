@@ -1,9 +1,9 @@
-const btn = document.getElementById('btn')
+const btn = document.getElementById('btn1')
 
 btn.addEventListener('click', submit);
 
 async function submit(e){
-    console.log('line 6 print')
+    
     try{
         e.preventDefault();
         const name = document.getElementById('name').value;

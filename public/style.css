@@ -5,8 +5,41 @@
     align-items: center;
     
   }
-  
+  .header{
+    margin-top: 10px;
+    display: flex;
+    justify-content: left;
+    align-items: center;
+  }
+  #logout{
+    margin-left: 80%;
+    
+  }
 
+  .form-expense{
+    margin-left: 2px;
+    width: 500px;
+    border: solid black;
+    display: flex;
+    
+   
+  }
+ #btn1{
+  width: 49%;
+ }
+ #btn2{
+  width: 49%;
+ }
+
+
+ #fp_btn{
+  width: 49%;
+ }
+
+
+ #login_btn{
+  width: 49%;
+ }
 
 #signup-form{
     margin: auto;
@@ -23,15 +56,33 @@ input[type=text], input[type=password] {
    
 }  
 
-#btn{
-    width: 49%;
+#download{
+    width: 20%;
     margin-bottom: 20px;
-    background-color: #8f8ff8ec;
+    background-color: #95b6f0ec;
+    border-radius: 10px;
 }
 
-#btn2{
-    width: 49%;
-    margin-bottom: 20px;
-    background-color: #8f8ff8ec;
+#showboard{
+  width: 30%;
+  margin-bottom: 20px;
+  background-color: #95b6f0ec;
+  border-radius: 10px;
 }
 
+#login-form{
+  margin: auto;
+  width: 382px;
+ justify-content: space-around;
+  border: 3px solid #231f1f; 
+  border-radius: 1rem  ;
+
+    
+}
+
+input[type=text], input[type=password] {   
+  width: 98%;   
+  margin: 8px 0;  
+  padding: 12px 20px;   
+  display: inline-block;  
+}
