@@ -25,7 +25,7 @@ async function xpenseManager(event) {
       { headers: { Authorization: token } }
     );
 
-    showDetailOnScreen(response.data.newDetails); //why the function of this written after bracket
+    showDetailOnScreen(response.data.newDetails); 
   } catch (err) {
     console.log(err);
     document.body.innerHTML =
